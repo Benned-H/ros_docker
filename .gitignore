@@ -161,7 +161,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Ignore path used to clone test packages used to find ROS dependencies
+# Ignore path used for dummy cloned packages for testing purposes
 test_packages/
 
 # Ignore generated catkin dependency lists

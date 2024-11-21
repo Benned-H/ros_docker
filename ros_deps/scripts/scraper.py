@@ -13,12 +13,12 @@ def find_dependencies(package_xml_path: Path) -> list[str]:
     """Find the dependencies specified in the given package manifest (package.xml).
 
     :param package_xml_path: Path to the package.xml file for a catkin package
-    :returns: List of all package dependencies specified by the package.xml
+    :returns: List of all catkin package dependencies specified by the package.xml
     """
     tree = ElementTree.parse(package_xml_path)
     root = tree.getroot()
 
-    # List the XML tag names used to specify types of catkin dependencies
+    # List the XML tag names used to specify types of catkin dependencies (in ROS 1)
     depend_tag_names = [
         "depend",
         "build_depend",
@@ -48,7 +48,7 @@ def main() -> None:
     src_path: Path = args.src_path
 
     assert src_path.is_dir(), f"Path '{src_path}' is not a valid directory."
-    assert src_path.name == "src", f"The path '{src_path}' is not named src."
+    assert src_path.name == "src", f"The path '{src_path}' is not named 'src'."
 
     print(f"Searching path '{src_path}' for catkin package dependencies...")
 
@@ -68,7 +68,7 @@ def main() -> None:
 
     print(f"Found the dependencies: {"\n".join(sorted_deps)}")
 
-    # Output the dependencies as a newline-separated list
+    # Output the dependencies into a file in the workspace's top directory
     output_path = src_path.parent / "catkin_package_deps.txt"
     with output_path.open("w") as deps_file:
         for dep in sorted_deps:
