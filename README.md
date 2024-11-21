@@ -2,11 +2,13 @@
 
 Scripts and config files for creating Dockerized ROS environments
 
-## Installation
+## Using the Tools
 
-To run the dependency scraping script, run:
+**ROS Dependency Scraping** - To scrape all catkin/ROS dependencies from a given `src` directory, run the following commands from the root of this repository:
 
 ```bash
 pip install .
-python3 ros_deps/scripts/scraper.py
+scrape-ros-deps <path-to-src-directory>
 ```
+
+The list of package dependencies will be output to the parent folder of the provided `src` directory (i.e., typically the root directory of the catkin workspace).

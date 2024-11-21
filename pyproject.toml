@@ -12,6 +12,9 @@ dependencies = ["defusedxml"]
 [project.optional-dependencies]
 dev = ["ruff", "mypy"]
 
+[project.scripts]
+scrape-ros-deps = "ros_deps.scripts.scraper:main"
+
 [tool.ruff] # Use the same settings as Black
 line-length = 88
 indent-width = 4
