@@ -2,7 +2,7 @@
 ARG CUDA_VERSION=12.6.2
 ARG UBUNTU_VERSION=24.04
 
-# Construct the base image dynamically bsed on build arguments
+# Construct the base image dynamically based on build arguments
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn-runtime-ubuntu${UBUNTU_VERSION} AS sam2
 
 # Prevent prompts during package installs
