@@ -1,4 +1,4 @@
-# Allow overriding default versions of CUDA, Ubuntu, and SAM 2
+# Allow overriding default versions of CUDA and Ubuntu
 ARG CUDA_VERSION=12.6.2
 ARG UBUNTU_VERSION=24.04
 
