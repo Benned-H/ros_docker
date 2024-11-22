@@ -7,7 +7,7 @@ ARG CUDA_FLAVOR=runtime
 ARG BASE_IMAGE=nvidia/cuda:${CUDA_VERSION}-${CUDA_FLAVOR}-ubuntu20.04
 
 # Install ROS 1 Noetic Desktop (not full) onto the base image
-FROM ${BASE_IMAGE} AS noetic-desktop-full
+FROM ${BASE_IMAGE} AS noetic-desktop
 ENV ROS_DISTRO=noetic
 
 # Ensure that any failure in a pipe (|) causes the stage to fail
@@ -24,25 +24,23 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-key add - && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        ros-noetic-desktop-full \
+        ros-noetic-desktop \
         python3-rosdep \
         python3-rosinstall \
         python3-rosinstall-generator \
         python3-wstool \
         build-essential \
-        # Provide the `catkin build` and `pip` commands
+        python3-pip \
+        # Provide the `catkin build` command
         # Reference: https://catkin-tools.readthedocs.io/en/latest/installing.html
-        python3-catkin-tools \
-        python3-pip
+        python3-catkin-tools
 
 RUN rosdep init && \
     rosdep update && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
-# TODO: Do we need this? gnupg
-
 # Stage 2 (optional): Install all catkin dependencies of the current workspace
-FROM noetic-desktop-full AS install-catkin-deps
+FROM noetic-desktop AS install-catkin-deps
 
 # Install the specified list of catkin package dependencies
 ARG HOST_DEP_PATH="catkin_package_deps.txt"
