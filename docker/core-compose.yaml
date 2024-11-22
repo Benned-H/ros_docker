@@ -1,30 +1,36 @@
 services:
-  base-gui: # Base service supporting in-container GUIs
+  base-cli: # Base service providing a command-line interface (CLI) to Docker
     environment:
-      - DISPLAY # Pass the DISPLAY environment variable for X11 forwarding
-      - QT_X11_NO_MITSHM=1 # Prevent Qt apps in Docker from using X11's MIT-SHM extension
-
-      # Nice-to-have environment variables for other useful settings
       - TERM # Pass the TERM environment variable specifying the terminal type
       - color_prompt=yes # Provide a colored prompt in the container
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro # Sync container timezone with host (read-only)
+
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+
+  base-gui-ubuntu: # Base service supporting in-container GUIs on Ubuntu hosts
+    extends:
+      service: base-cli # Extend a service configuring the container's CLI
+
+    environment: # Environment variables to support in-container GUIs on Ubuntu hosts
+      - DISPLAY # Pass the DISPLAY environment variable for X11 forwarding
+      - QT_X11_NO_MITSHM=1 # Prevent Qt apps in Docker from using X11's MIT-SHM extension
 
     devices:
       - "/dev/dri:/dev/dri" # Map the host's Direct Rendering Infrastructure (DRI) into the container
 
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix # Mount the X11 Unix socket to support GUIs
-      - /etc/localtime:/etc/localtime:ro # Sync the container's timezone with the host (read-only)
 
-    stdin_open: true # docker run -i
-    tty: true # docker run -t
-
-  nvidia-gpu: # Base service providing support for NVIDIA GPU(s) and in-container GUIs
+  base-nvidia-ubuntu: # Service using NVIDIA GPU(s) for in-Docker GUIs on Ubuntu hosts
     extends:
-      service: base-gui # Extend the above service providing support for GUIs
+      service: base-gui-ubuntu # Extend a service configuring support for GUIs
 
     environment: # Additional NVIDIA-required environment variables
       - NVIDIA_VISIBLE_DEVICES=all # Ensure that the container can access all NVIDIA devices
-      - NVIDIA_DRIVER_CAPABILITIES=all # Enable all NVIDIA driver capabilities for container
+      - NVIDIA_DRIVER_CAPABILITIES=all # Enable all NVIDIA driver capabilities for Docker
 
       # Modern Docker Compose or NVIDIA documentation doesn't really mention these three:
       # - __NV_PRIME_RENDER_OFFLOAD=1 # Offload graphics applications to the NVIDIA GPU
