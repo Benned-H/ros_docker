@@ -1,0 +1,15 @@
+services:
+  sam2: # Container providing the dependencies of the Segment Anything Model 2 (SAM 2)
+    extends: # Extend a service providing config for NVIDIA GPU(s) and in-Docker GUIs
+      file: ./docker/core-compose.yaml
+      service: nvidia-gpu
+
+    build: # Build command: docker compose --progress plain build sam2
+      context: ./docker/
+      dockerfile: sam2.Dockerfile
+      target: sam2
+
+    image: bennedh/spot-skills:sam2
+
+    volumes: # Mount the working directory into the container
+      - .:/docker/
