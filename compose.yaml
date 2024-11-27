@@ -13,3 +13,24 @@ services:
 
     volumes: # Mount the working directory into the container
       - .:/docker/
+
+  # Container demonstrating a Docker GUI for a macOS host machine
+  #
+  # To run the container with GUI support:
+  #   1. Open XQuartz using the command:    open -a XQuartz
+  #   2. Within XQuartz > Preferences... > Security, check the boxes:
+  #     "Authenticate connections" and "Allow connections from network clients"
+  #   3. Restart (close then re-open) XQuartz if settings were changed
+  #   4. Provide xhost access to Docker by running from Terminal:   xhost +localhost
+  #   5. Launch the container using the command:    docker compose up gui-mac-host
+  #
+  # You should see a pair of eyes, gaze following the mouse, in a windowed GUI
+  gui-mac-host:
+    extends:
+      file: ./compose/core-compose.yaml
+      service: base-gui-mac-host
+
+    build: # Command:     docker compose --progress plain build gui-mac-host
+      context: ./dockerfiles/
+      dockerfile: gui-test.Dockerfile
+      target: gui-test
