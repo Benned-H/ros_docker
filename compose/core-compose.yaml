@@ -24,6 +24,13 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix # Mount the X11 Unix socket to support GUIs
 
+  base-gui-mac-host: # Base service supporting in-container GUIs on macOS hosts
+    extends:
+      service: base-cli # Extend a service configuring the container's CLI
+
+    environment: # Set the DISPLAY environment variable for use with XQuartz
+      - DISPLAY=docker.for.mac.host.internal:0
+
   base-nvidia-ubuntu: # Service using NVIDIA GPU(s) for in-Docker GUIs on Ubuntu hosts
     extends:
       service: base-gui-ubuntu # Extend a service configuring support for GUIs
