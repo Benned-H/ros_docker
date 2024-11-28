@@ -5,11 +5,9 @@ ARG UBUNTU_VERSION=24.04
 # Construct the base image dynamically based on build arguments
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn-runtime-ubuntu${UBUNTU_VERSION} AS sam2
 
-# Prevent prompts during package installs
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install dependencies of the Segment Anything Model 2 (SAM 2) and its notebook demos
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get install -y --no-install-recommends python3-pip \
     # Reference: https://stackoverflow.com/a/63377623
     ffmpeg libsm6 libxext6 && \
