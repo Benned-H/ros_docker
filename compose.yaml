@@ -13,3 +13,17 @@ services:
 
     volumes: # Mount the working directory into the container
       - .:/docker/
+
+  glxgears-mac: # Container supporting the glxgears OpenGL demo on a macOS host
+    extends: # Extend a service providing a basic CLI for Docker
+      file: ./compose/core-compose.yaml
+      service: base-cli
+
+    environment:
+      - DISPLAY=docker.for.mac.host.internal:0
+      #- QT_X11_NO_MITSHM=1 # Prevent Qt apps in Docker from using X11's MIT-SHM extension
+
+    build: # See the Dockerfile for full build/run instructions
+      context: ./dockerfiles/
+      dockerfile: glxgears-mac.Dockerfile
+      target: glxgears-mac
