@@ -66,7 +66,7 @@ def main() -> None:
         print(f"Found no catkin dependencies under '{src_path}'.")
         sys.exit(0)
 
-    print(f"Found the dependencies: {"\n".join(sorted_deps)}")
+    print(f"Found the dependencies: {'\n'.join(sorted_deps)}")
 
     # Output the dependencies into a file in the workspace's top directory
     output_path = src_path.parent / "catkin_package_deps.txt"
