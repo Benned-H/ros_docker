@@ -23,6 +23,8 @@ services:
 
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix # Mount the X11 Unix socket to support GUIs
+    
+    network_mode: host # Share the host's network
 
   base-gui-mac-host: # Base service supporting in-container GUIs on macOS hosts
     extends:
@@ -55,4 +57,3 @@ services:
               capabilities: [gpu]
 
     runtime: nvidia # Use the NVIDIA Container Runtime
-    network_mode: host # Share the host's network
