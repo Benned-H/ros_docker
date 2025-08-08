@@ -34,3 +34,15 @@ services:
       context: ./dockerfiles/
       dockerfile: gui-test.Dockerfile
       target: gui-test
+
+  noetic-nvidia:
+    extends: # Extend a service providing config for NVIDIA GPU(s) and in-Docker GUIs
+      file: ./compose/core-compose.yaml
+      service: base-nvidia-ubuntu
+  
+    build: # Command:     docker compose --progress plain build noetic-nvidia
+      context: ./dockerfiles/
+      dockerfile: noetic.Dockerfile
+      target: noetic-desktop-full
+
+    image: bennedh/ros-docker:noetic-nvidia

@@ -1,13 +1,13 @@
 # Allow overriding default CUDA version and flavor
 # Reference: https://hub.docker.com/r/nvidia/cuda
-ARG CUDA_VERSION=12.6.2
-ARG CUDA_FLAVOR=runtime
+ARG CUDA_VERSION=12.9.1
+ARG CUDA_FLAVOR=cudnn-runtime
 
 # Allow overriding the base image for non-NVIDIA host machines (default uses GPU)
 ARG BASE_IMAGE=nvidia/cuda:${CUDA_VERSION}-${CUDA_FLAVOR}-ubuntu20.04
 
-# Install ROS 1 Noetic Desktop (not full) onto the base image
-FROM ${BASE_IMAGE} AS noetic-desktop
+# Install ROS 1 Noetic Desktop-Full onto the base image
+FROM ${BASE_IMAGE} AS noetic-desktop-full
 ENV ROS_DISTRO=noetic
 
 # Ensure that any failure in a pipe (|) causes the stage to fail
@@ -24,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-key add - && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        ros-noetic-desktop \
+        ros-noetic-desktop-full \
         python3-rosdep \
         python3-rosinstall \
         python3-rosinstall-generator \
@@ -33,14 +33,19 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         python3-pip \
         # Provide the `catkin build` command
         # Reference: https://catkin-tools.readthedocs.io/en/latest/installing.html
-        python3-catkin-tools
+        python3-catkin-tools && \
+        # Clean up layer after using apt-get update
+        rm -rf /var/lib/apt/lists/* && apt-get clean
 
 RUN rosdep init && \
     rosdep update && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
+ENV DISABLE_ROS1_EOL_WARNINGS=1
+CMD ["bash"]
+
 # Stage 2 (optional): Install all catkin dependencies of the current workspace
-FROM noetic-desktop AS install-catkin-deps
+FROM noetic-desktop-full AS install-catkin-deps
 
 # Install the specified list of catkin package dependencies
 ARG HOST_DEP_PATH="catkin_package_deps.txt"
