@@ -101,7 +101,7 @@ VOLUME /docker/rtabmap_ws
 # Source the rtabmap workspace in all terminals
 RUN echo "source /docker/rtabmap_ws/devel/setup.bash" >> ~/.bashrc
 
-RUN python -m pip install -U pip setuptools wheel
+RUN python -m pip install -U pip setuptools wheel importlib_metadata==4.13.0
 
 CMD ["bash"]
 
