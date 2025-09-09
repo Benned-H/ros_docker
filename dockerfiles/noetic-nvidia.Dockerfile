@@ -81,6 +81,16 @@ ENV DISABLE_ROS1_EOL_WARNINGS=1
 WORKDIR /docker/rtabmap_ws/src
 RUN git clone --depth 1 --branch noetic-devel https://github.com/introlab/rtabmap_ros
 
+# Another layer to add ROS dependencies required by RTAB-Map
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ros-noetic-image-geometry \
+        ros-noetic-apriltag-ros \
+        ros-noetic-grid-map && \
+    # Clean up layer after using apt-get update
+    rm -rf /var/lib/apt/lists/* && apt-get clean
+
 # Build RTAB-Map with the RTABMAP_SYNC_MULTI_RGBD flag
 # Reference: https://github.com/introlab/rtabmap_ros/issues/453
 WORKDIR /docker/rtabmap_ws
