@@ -23,7 +23,7 @@ services:
 
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix # Mount the X11 Unix socket to support GUIs
-    
+
     network_mode: host # Share the host's network
 
   base-gui-mac-host: # Base service supporting in-container GUIs on macOS hosts
@@ -40,10 +40,8 @@ services:
     environment: # Additional NVIDIA-required environment variables
       - NVIDIA_VISIBLE_DEVICES=all # Ensure that the container can access all NVIDIA devices
       - NVIDIA_DRIVER_CAPABILITIES=all # Enable all NVIDIA driver capabilities for Docker
-
-      # Modern Docker Compose or NVIDIA documentation doesn't really mention these three:
-      # - __NV_PRIME_RENDER_OFFLOAD=1 # Offload graphics applications to the NVIDIA GPU
-      # - __GLX_VENDOR_LIBRARY_NAME=nvidia # Specify to use the NVIDIA driver for GLX graphics
+      - __NV_PRIME_RENDER_OFFLOAD=1 # Prefer the discrete NVIDIA GPU for OpenGL on hybrid machines
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia # Force GLX clients such as RViz to use the NVIDIA vendor library
 
       # Run `drm-info` to view your machine's DRM device info
       # - DRI_NAME=card1 # Set the DRI (Direct Rendering Infrastructure) device to the GPU

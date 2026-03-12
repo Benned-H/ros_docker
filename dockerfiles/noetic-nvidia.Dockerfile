@@ -77,29 +77,16 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 ENV DISABLE_ROS1_EOL_WARNINGS=1
 
-# Clone and build the ROS wrapper for RTAB-Map to support multiple RGB-D cameras
-WORKDIR /docker/rtabmap_ws/src
-RUN git clone --depth 1 --branch noetic-devel https://github.com/introlab/rtabmap_ros
-
-# Another layer to add ROS dependencies required by RTAB-Map
+# Final layer to add apt-get-installed dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ros-noetic-image-geometry \
         ros-noetic-apriltag-ros \
-        ros-noetic-grid-map && \
+        ros-noetic-grid-map \
+        python3-tk && \
     # Clean up layer after using apt-get update
     rm -rf /var/lib/apt/lists/* && apt-get clean
-
-# Build RTAB-Map with the RTABMAP_SYNC_MULTI_RGBD flag
-# Reference: https://github.com/introlab/rtabmap_ros/issues/453
-WORKDIR /docker/rtabmap_ws
-RUN catkin config --extend "/opt/ros/noetic" --cmake-args -DCMAKE_BUILD_TYPE=Release && \
-    catkin build rtabmap_ros -DRTABMAP_SYNC_MULTI_RGBD=ON
-VOLUME /docker/rtabmap_ws
-
-# Source the rtabmap workspace in all terminals
-RUN echo "source /docker/rtabmap_ws/devel/setup.bash" >> ~/.bashrc
 
 RUN python -m pip install -U pip setuptools wheel importlib_metadata==4.13.0
 
